@@ -53,10 +53,6 @@
       <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RestSharp, Version=105.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Schtick, Version=1.0.3.9, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Schtick.1.0.3\lib\net45\Schtick.dll</HintPath>
       <Private>True</Private>
