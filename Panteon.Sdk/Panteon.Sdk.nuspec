@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Panteon.Sdk</id>
+    <version>1.0.0</version>
+    <title>Panteon.Sdk</title>
+    <authors>Ziya SARIKAYA</authors>
+    <owners>ziyasal</owners>
+    <licenseUrl>https://github.com/PanteonProject/Panteon.Sdk/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/PanteonProject/Panteon.Sdk/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      Panteon Task Process Host
+    </description>
+    <summary> Panteon Task Process Host</summary>
+    <tags>panteon task job scheduler host</tags>
+    <copyright />
+    <dependencies>
+      <dependency id="Autofac" version="3.5.2"  />
+      <dependency id="Autofac.Extras.NLog" version="1.3.0"  />
+      <dependency id="Newtonsoft.Json" version="7.0.1" />
+      <dependency id="NLog" version="4.0.1" />
+      <dependency id="PusherServer" version="2.1.1.0"  />
+      <dependency id="RestSharp" version="105.0.1" />
+      <dependency id="Schtick" version="1.0.3"  />
+      <dependency id="Schtick.Redis" version="1.0.1" />
+      <dependency id="Schyntax" version="1.0.1"  />
+      <dependency id="StackExchange.Redis" version="1.0.481" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\Panteon.Sdk.dll" target="lib\net451\Panteon.Sdk.dll" />
+  </files>
+</package>
