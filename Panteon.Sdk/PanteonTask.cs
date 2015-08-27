@@ -30,9 +30,9 @@ namespace Panteon.Sdk
         protected ScheduledTask ScheduledTask { get; set; }
         public abstract string Name { get; }
 
-        public abstract bool Bootstrap();
+        public abstract bool Bootstrap(bool startImmediately);
 
-        public virtual bool Run(Action<ScheduledTask, DateTimeOffset> actionToRun)
+        public virtual bool Run(Action<ScheduledTask, DateTimeOffset> actionToRun, bool autoRun = true)
         {
             Console.WriteLine($"{Name} is started.");
 
@@ -44,11 +44,9 @@ namespace Panteon.Sdk
                 ScheduledTask = _schtick.AddAsyncTask(Name, TaskSettings.SchedulePattern,
                     Wrapper.WrapAsync(async (task, timeIntendedToRun) =>
                         await Task.Run(() => actionToRun?.Invoke(task, timeIntendedToRun)).ConfigureAwait(false))
-                    );
+                    , autoRun);
 
                 ScheduledTask.OnException += ScheduledTask_OnException;
-
-                ScheduledTask.StartSchedule();
 
                 return true;
             }
@@ -90,12 +88,24 @@ namespace Panteon.Sdk
             }
         }
 
+        public bool Start(DateTimeOffset lastKnownEvent = default(DateTimeOffset))
+        {
+            if (!ScheduledTask.IsScheduleRunning)
+            {
+                ScheduledTask.StartSchedule(lastKnownEvent);
+                return true;
+            }
+
+            return false;
+        }
+
         public virtual void Pause(TimeSpan duration)
         {
             var now = DateTime.Now;
             var nextStartDate = now.AddSeconds(duration.Seconds);
 
-            //TODO: wait and pause
+            ScheduledTask.StopSchedule();
+            //TODO: pause
         }
 
         private void ScheduledTask_OnException(ScheduledTask arg1, Exception arg2)
