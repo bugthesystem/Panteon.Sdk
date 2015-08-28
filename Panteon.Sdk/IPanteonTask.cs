@@ -10,6 +10,8 @@ namespace Panteon.Sdk
         bool Stop();
         bool Start(DateTimeOffset lastKnownEvent = default(DateTimeOffset));
         void Pause(TimeSpan duration);
+        bool Update(ScheduleInfo scheduleInfo);
+
         PanteonTaskInfo Inspect();
         void Progress(ProgressMessage message);
     }

@@ -57,6 +57,13 @@ namespace Panteon.Sdk
             }
         }
 
+        public bool Update(ScheduleInfo scheduleInfo)
+        {
+            ScheduledTask.UpdateSchedule(new Schedule(scheduleInfo.ScheduleExpression));
+
+            return true;
+        }
+
         public virtual PanteonTaskInfo Inspect()
         {
             if (ScheduledTask != null)

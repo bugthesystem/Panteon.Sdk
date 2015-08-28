@@ -97,6 +97,7 @@
     <Compile Include="Realtime\PubSubException.cs" />
     <Compile Include="Realtime\PubSubMessage.cs" />
     <Compile Include="Requires.cs" />
+    <Compile Include="ScheduleInfo.cs" />
     <Compile Include="Utils\EnvironmentWrapper.cs" />
     <Compile Include="Utils\IEnvironmentWrapper.cs" />
     <Compile Include="Utils\IJsonSerializer.cs" />
