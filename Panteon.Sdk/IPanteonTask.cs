@@ -6,7 +6,7 @@ namespace Panteon.Sdk
     public interface IPanteonTask
     {
         string Name { get; }
-        bool Bootstrap(bool startImmediately);
+        bool Init(bool autoRun);
         bool Stop();
         bool Start(DateTimeOffset lastKnownEvent = default(DateTimeOffset));
         void Pause(TimeSpan duration);

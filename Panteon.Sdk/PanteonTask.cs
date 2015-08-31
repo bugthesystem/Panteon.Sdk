@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Autofac.Extras.NLog;
 using Panteon.Sdk.Configuration;
+using Panteon.Sdk.Events;
 using Panteon.Sdk.Models;
 using Schyntax;
 using StackExchange.Redis;
@@ -10,17 +11,22 @@ namespace Panteon.Sdk
 {
     public abstract class PanteonTask : IPanteonTask
     {
-        protected ILogger Logger { get; private set; }
+        protected ILogger TaskLogger { get; private set; }
         protected ITaskSettings TaskSettings { get; private set; }
+
+        protected event EventHandler<TaskStartedEventArgs> OnStarted;
+        protected event EventHandler<TaskStoppedEventArgs> OnStopped;
+        protected event EventHandler<TaskPausedEventArgs> OnPaused;
+        protected event EventHandler<TaskExceptionEventArgs> OnException;
 
         protected IConnectionMultiplexer Multiplexer { get; private set; }
         public RedisSchtickWrapper Wrapper { get; private set; }
 
         private readonly Schtick _schtick;
 
-        protected PanteonTask(ILogger logger, ITaskSettings taskSettings)
+        protected PanteonTask(ILogger taskLogger, ITaskSettings taskSettings)
         {
-            Logger = logger;
+            TaskLogger = taskLogger;
             TaskSettings = taskSettings;
             _schtick = new Schtick();
             Multiplexer = ConnectionMultiplexer.Connect(TaskSettings.RedisConnectionString);
@@ -30,7 +36,7 @@ namespace Panteon.Sdk
         protected ScheduledTask ScheduledTask { get; set; }
         public abstract string Name { get; }
 
-        public abstract bool Bootstrap(bool startImmediately);
+        public abstract bool Init(bool autoRun);
 
         public virtual bool Run(Action<ScheduledTask, DateTimeOffset> actionToRun, bool autoRun = true)
         {
@@ -38,21 +44,24 @@ namespace Panteon.Sdk
 
             try
             {
-                Logger.Info($"{Name} is started.");
+                TaskLogger.Info($"{Name} is started.");
                 //TODO: async
 
                 ScheduledTask = _schtick.AddAsyncTask(Name, TaskSettings.SchedulePattern,
                     Wrapper.WrapAsync(async (task, timeIntendedToRun) =>
-                        await Task.Run(() => actionToRun?.Invoke(task, timeIntendedToRun)).ConfigureAwait(false))
+                        await Task.Run(() => actionToRun?.Invoke(task, timeIntendedToRun))
+                            .ConfigureAwait(false))
                     , autoRun);
 
                 ScheduledTask.OnException += ScheduledTask_OnException;
+
+                OnStarted?.Invoke(this, new TaskStartedEventArgs());
 
                 return true;
             }
             catch (Exception exception)
             {
-                Logger.Error($"An error occurrred while executing {Name}", exception);
+                TaskLogger.Error($"An error occurrred while executing {Name}", exception);
                 return false;
             }
         }
@@ -86,11 +95,14 @@ namespace Panteon.Sdk
             try
             {
                 ScheduledTask.StopSchedule();
+
+                OnStopped?.Invoke(this, new TaskStoppedEventArgs());
+
                 return true;
             }
             catch (Exception exception)
             {
-                Logger.Error("", exception);
+                TaskLogger.Error("", exception);
                 return false;
             }
         }
@@ -100,6 +112,9 @@ namespace Panteon.Sdk
             if (!ScheduledTask.IsScheduleRunning)
             {
                 ScheduledTask.StartSchedule(lastKnownEvent);
+
+                OnStarted?.Invoke(this, new TaskStartedEventArgs());
+
                 return true;
             }
 
@@ -113,11 +128,15 @@ namespace Panteon.Sdk
 
             ScheduledTask.StopSchedule();
             //TODO: pause
+
+            OnPaused?.Invoke(this, new TaskPausedEventArgs());
         }
 
         private void ScheduledTask_OnException(ScheduledTask arg1, Exception arg2)
         {
-            Logger.Error($"An error occurred while executing {arg1.Name}", arg2);
+            TaskLogger.Error($"An error occurred while executing {arg1.Name}", arg2);
+
+            OnException?.Invoke(this, new TaskExceptionEventArgs(arg1, arg2));
         }
 
         public virtual void Progress(ProgressMessage message)

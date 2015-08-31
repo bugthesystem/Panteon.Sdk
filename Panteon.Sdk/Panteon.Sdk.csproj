@@ -84,6 +84,10 @@
     <Compile Include="Configuration\TaskConfigProviderBase.cs" />
     <Compile Include="Configuration\TaskSettingsBase.cs" />
     <Compile Include="CoreModule.cs" />
+    <Compile Include="Events\TaskExceptionEventArgs.cs" />
+    <Compile Include="Events\TaskStartedEventArgs.cs" />
+    <Compile Include="Events\TaskPausedEventArgs.cs" />
+    <Compile Include="Events\TaskStoppedEventArgs.cs" />
     <Compile Include="ITaskExports.cs" />
     <Compile Include="IPanteonTask.cs" />
     <Compile Include="Models\PanteonTaskInfo.cs" />
