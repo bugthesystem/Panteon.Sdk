@@ -1,7 +1,7 @@
 namespace Panteon.Sdk.Events
 {
-    public class TaskStartedEventArgs
+    public class TaskStartedEventArgs: TaskEventArgs
     {
-         
+
     }
 }

@@ -84,6 +84,7 @@
     <Compile Include="Configuration\TaskConfigProviderBase.cs" />
     <Compile Include="Configuration\TaskSettingsBase.cs" />
     <Compile Include="CoreModule.cs" />
+    <Compile Include="Events\TaskEventArgs.cs" />
     <Compile Include="Events\TaskExceptionEventArgs.cs" />
     <Compile Include="Events\TaskStartedEventArgs.cs" />
     <Compile Include="Events\TaskPausedEventArgs.cs" />

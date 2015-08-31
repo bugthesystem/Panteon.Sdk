@@ -1,6 +1,6 @@
 ﻿namespace Panteon.Sdk.Events
 {
-    public class TaskStoppedEventArgs
+    public class TaskStoppedEventArgs: TaskEventArgs
     {
          
     }

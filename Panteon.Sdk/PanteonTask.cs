@@ -19,6 +19,9 @@ namespace Panteon.Sdk
         protected event EventHandler<TaskPausedEventArgs> OnPaused;
         protected event EventHandler<TaskExceptionEventArgs> OnException;
 
+        protected event EventHandler<TaskEventArgs> OnEnter;
+        protected event EventHandler<TaskEventArgs> OnExit;
+
         protected IConnectionMultiplexer Multiplexer { get; private set; }
         public RedisSchtickWrapper Wrapper { get; private set; }
 
@@ -45,12 +48,18 @@ namespace Panteon.Sdk
             try
             {
                 TaskLogger.Info($"{Name} is started.");
-                //TODO: async
+
+                //TODO: Async
+                //TODO: Reafctor & Improve
 
                 ScheduledTask = _schtick.AddAsyncTask(Name, TaskSettings.SchedulePattern,
                     Wrapper.WrapAsync(async (task, timeIntendedToRun) =>
-                        await Task.Run(() => actionToRun?.Invoke(task, timeIntendedToRun))
-                            .ConfigureAwait(false))
+                        await Task.Run(() =>
+                        {
+                            OnEnter?.Invoke(this, new TaskEventArgs());
+                            actionToRun?.Invoke(task, timeIntendedToRun);
+                            OnExit?.Invoke(this, new TaskEventArgs());
+                        }).ConfigureAwait(false))
                     , autoRun);
 
                 ScheduledTask.OnException += ScheduledTask_OnException;
