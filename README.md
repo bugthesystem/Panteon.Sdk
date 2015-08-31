@@ -20,13 +20,16 @@ Panteon.Sdk
 
                 builder.RegisterModule<CoreModule>();
 
-                builder.RegisterType<EnvironmentWrapper>().As<IEnvironmentWrapper>().SingleInstance();
+                builder.RegisterType<EnvironmentWrapper>().As<IEnvironmentWrapper>()
+                    .SingleInstance();
 
-                builder.RegisterType<JsonNetSerializer>().As<IJsonSerializer>().SingleInstance();
+                builder.RegisterType<JsonNetSerializer>().As<IJsonSerializer>()
+                    .SingleInstance();
 
                 builder.RegisterType<PubSubClient>().As<IPubSubClient>().SingleInstance();
 
-                builder.Register(context => new HelloTaskConfigProvider(context.Resolve<ILogger>()).ParseSettings())
+                builder.Register(context => new HelloTaskConfigProvider(context.Resolve<ILogger>())
+                    .ParseSettings())
                     .AsImplementedInterfaces().SingleInstance();
 
                 builder.RegisterType<HelloTask>().As<IPanteonTask>();
@@ -61,7 +64,10 @@ Panteon.Sdk
 
                 if (i % 100000 == 0)
                 {
-                    Progress(new ProgressMessage { Message = message, Percent = 10m * tmp });
+                    Progress(new ProgressMessage { 
+                        Message = message,
+                        Percent = 10m * tmp 
+                    });
                 }
             }
 
@@ -84,11 +90,14 @@ Panteon.Sdk
 
                 builder.RegisterModule<CoreModule>();
 
-                builder.RegisterType<EnvironmentWrapper>().As<IEnvironmentWrapper>().SingleInstance();
+                builder.RegisterType<EnvironmentWrapper>().As<IEnvironmentWrapper>()
+                    .SingleInstance();
 
-                builder.RegisterType<JsonNetSerializer>().As<IJsonSerializer>().SingleInstance();
+                builder.RegisterType<JsonNetSerializer>().As<IJsonSerializer>()
+                    .SingleInstance();
 
-                builder.Register(context => new SampleTaskConfigProvider(context.Resolve<ILogger>()).ParseSettings())
+                builder.Register(context => new SampleTaskConfigProvider(context.Resolve<ILogger>())
+                    .ParseSettings())
                     .AsImplementedInterfaces().SingleInstance();
 
                 builder.RegisterType<SampleTask>().As<IPanteonTask>();
@@ -109,7 +118,8 @@ public class SampleTask : PanteonTask, IDisposable
 
         public override bool Init(bool autoRun)
         {
-            return Run((task, offset) => Console.WriteLine($"Dummy Hello {DateTime.Now}"));
+            return Run((task, offset) => 
+                Console.WriteLine($"Dummy Hello {DateTime.Now}"));
         }
     }
 ```
