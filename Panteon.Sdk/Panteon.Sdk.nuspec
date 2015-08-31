@@ -2,10 +2,11 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Panteon.Sdk</id>
-    <version>1.0.2</version>
+    <version>1.0.4</version>
     <title>Panteon.Sdk</title>
     <authors>Ziya SARIKAYA</authors>
     <owners>ziyasal</owners>
+    <iconUrl>https://raw.githubusercontent.com/PanteonProject/panteon-dashboard/master/misc/path4141.png</iconUrl>
     <licenseUrl>https://github.com/PanteonProject/Panteon.Sdk/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/PanteonProject/Panteon.Sdk/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
