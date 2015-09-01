@@ -83,6 +83,11 @@
     <Compile Include="Configuration\IWorkerSettings.cs" />
     <Compile Include="Configuration\TaskConfigProviderBase.cs" />
     <Compile Include="Configuration\WorkerSettingsBase.cs" />
+    <Compile Include="IO\FileContentResult.cs" />
+    <Compile Include="IO\FileReader.cs" />
+    <Compile Include="IO\FileSystem.cs" />
+    <Compile Include="IO\IFileReader.cs" />
+    <Compile Include="IO\IFileSystem.cs" />
     <Compile Include="WorkerModule.cs" />
     <Compile Include="Events\WorkerEventArgs.cs" />
     <Compile Include="Events\TaskExceptionEventArgs.cs" />

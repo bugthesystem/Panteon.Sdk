@@ -30,7 +30,7 @@ namespace Panteon.Sdk
             {
                 IPubSubResult result = PubSubClient.Publish(new PubSubMessage
                 {
-                    Event = "task:started",
+                    Event = "task:onstarted",
                     Channel = "panteon",
                     Payload = new
                     {
