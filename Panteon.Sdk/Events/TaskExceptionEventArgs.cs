@@ -3,7 +3,7 @@ using Schyntax;
 
 namespace Panteon.Sdk.Events
 {
-    public class TaskExceptionEventArgs : TaskEventArgs
+    public class TaskExceptionEventArgs : WorkerEventArgs
     {
         public ScheduledTask Task { get; }
         public Exception Exception { get; }

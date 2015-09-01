@@ -80,22 +80,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\ITaskSettings.cs" />
+    <Compile Include="Configuration\IWorkerSettings.cs" />
     <Compile Include="Configuration\TaskConfigProviderBase.cs" />
-    <Compile Include="Configuration\TaskSettingsBase.cs" />
-    <Compile Include="CoreModule.cs" />
-    <Compile Include="Events\TaskEventArgs.cs" />
+    <Compile Include="Configuration\WorkerSettingsBase.cs" />
+    <Compile Include="WorkerModule.cs" />
+    <Compile Include="Events\WorkerEventArgs.cs" />
     <Compile Include="Events\TaskExceptionEventArgs.cs" />
-    <Compile Include="Events\TaskStartedEventArgs.cs" />
-    <Compile Include="Events\TaskPausedEventArgs.cs" />
-    <Compile Include="Events\TaskStoppedEventArgs.cs" />
+    <Compile Include="Events\WorkerStartedEventArgs.cs" />
+    <Compile Include="Events\WorkerPausedEventArgs.cs" />
+    <Compile Include="Events\WorkerStoppedEventArgs.cs" />
     <Compile Include="ITaskExports.cs" />
-    <Compile Include="IPanteonTask.cs" />
+    <Compile Include="IPanteonWorker.cs" />
     <Compile Include="Models\PanteonTaskInfo.cs" />
     <Compile Include="Models\ProgressMessage.cs" />
-    <Compile Include="PanteonTask.cs" />
+    <Compile Include="PanteonWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RealtimePanteonTask.cs" />
+    <Compile Include="RealtimePanteonWorker.cs" />
     <Compile Include="Realtime\IPubSubClient.cs" />
     <Compile Include="Realtime\IPubSubMessage.cs" />
     <Compile Include="Realtime\IPubSubResult.cs" />
@@ -103,8 +103,6 @@
     <Compile Include="Realtime\PubSubMessage.cs" />
     <Compile Include="Requires.cs" />
     <Compile Include="ScheduleInfo.cs" />
-    <Compile Include="Utils\EnvironmentWrapper.cs" />
-    <Compile Include="Utils\IEnvironmentWrapper.cs" />
     <Compile Include="Utils\IJsonSerializer.cs" />
     <Compile Include="Utils\JsonNetSerializer.cs" />
   </ItemGroup>

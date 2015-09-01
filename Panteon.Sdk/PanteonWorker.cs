@@ -9,31 +9,32 @@ using StackExchange.Redis;
 
 namespace Panteon.Sdk
 {
-    public abstract class PanteonTask : IPanteonTask
+    public abstract class PanteonWorker : IPanteonWorker
     {
-        protected ILogger TaskLogger { get; private set; }
-        protected ITaskSettings TaskSettings { get; private set; }
+        protected ILogger WorkerLogger { get; private set; }
+        protected IWorkerSettings WorkerSettings { get; private set; }
 
-        protected event EventHandler<TaskStartedEventArgs> OnStarted;
-        protected event EventHandler<TaskStoppedEventArgs> OnStopped;
-        protected event EventHandler<TaskPausedEventArgs> OnPaused;
-        protected event EventHandler<TaskExceptionEventArgs> OnException;
+        protected event EventHandler<WorkerStartedEventArgs> OnStarted;
+        protected event EventHandler<WorkerStoppedEventArgs> OnStopped;
+        protected event EventHandler<WorkerPausedEventArgs> OnPaused;
 
-        protected event EventHandler<TaskEventArgs> OnEnter;
-        protected event EventHandler<TaskEventArgs> OnExit;
+        protected event EventHandler<TaskExceptionEventArgs> OnTaskException;
+        protected event EventHandler<WorkerEventArgs> OnTaskEnter;
+        protected event EventHandler<WorkerEventArgs> OnTaskExit;
 
         protected IConnectionMultiplexer Multiplexer { get; private set; }
-        public RedisSchtickWrapper Wrapper { get; private set; }
+        protected RedisSchtickWrapper TaskWrapper { get; private set; }
 
         private readonly Schtick _schtick;
 
-        protected PanteonTask(ILogger taskLogger, ITaskSettings taskSettings)
+        protected PanteonWorker(ILogger workerLogger, IWorkerSettings workerSettings)
         {
-            TaskLogger = taskLogger;
-            TaskSettings = taskSettings;
+            WorkerLogger = workerLogger;
+            WorkerSettings = workerSettings;
             _schtick = new Schtick();
-            Multiplexer = ConnectionMultiplexer.Connect(TaskSettings.RedisConnectionString);
-            Wrapper = new RedisSchtickWrapper(() => Multiplexer.GetDatabase(TaskSettings.DbNo));
+
+            Multiplexer = ConnectionMultiplexer.Connect(WorkerSettings.RedisConnectionString);
+            TaskWrapper = new RedisSchtickWrapper(() => Multiplexer.GetDatabase(WorkerSettings.DbNo));
         }
 
         protected ScheduledTask ScheduledTask { get; set; }
@@ -47,30 +48,30 @@ namespace Panteon.Sdk
 
             try
             {
-                TaskLogger.Info($"{Name} is started.");
+                WorkerLogger.Info($"{Name} is started.");
 
                 //TODO: Async
                 //TODO: Reafctor & Improve
 
-                ScheduledTask = _schtick.AddAsyncTask(Name, TaskSettings.SchedulePattern,
-                    Wrapper.WrapAsync(async (task, timeIntendedToRun) =>
+                ScheduledTask = _schtick.AddAsyncTask(Name, WorkerSettings.SchedulePattern,
+                    TaskWrapper.WrapAsync(async (task, timeIntendedToRun) =>
                         await Task.Run(() =>
                         {
-                            OnEnter?.Invoke(this, new TaskEventArgs());
+                            OnTaskEnter?.Invoke(this, new WorkerEventArgs());
                             actionToRun?.Invoke(task, timeIntendedToRun);
-                            OnExit?.Invoke(this, new TaskEventArgs());
+                            OnTaskExit?.Invoke(this, new WorkerEventArgs());
                         }).ConfigureAwait(false))
                     , autoRun);
 
                 ScheduledTask.OnException += ScheduledTask_OnException;
 
-                OnStarted?.Invoke(this, new TaskStartedEventArgs());
+                OnStarted?.Invoke(this, new WorkerStartedEventArgs());
 
                 return true;
             }
             catch (Exception exception)
             {
-                TaskLogger.Error($"An error occurrred while executing {Name}", exception);
+                WorkerLogger.Error($"An error occurrred while executing {Name}", exception);
                 return false;
             }
         }
@@ -105,13 +106,13 @@ namespace Panteon.Sdk
             {
                 ScheduledTask.StopSchedule();
 
-                OnStopped?.Invoke(this, new TaskStoppedEventArgs());
+                OnStopped?.Invoke(this, new WorkerStoppedEventArgs());
 
                 return true;
             }
             catch (Exception exception)
             {
-                TaskLogger.Error("", exception);
+                WorkerLogger.Error("", exception);
                 return false;
             }
         }
@@ -122,7 +123,7 @@ namespace Panteon.Sdk
             {
                 ScheduledTask.StartSchedule(lastKnownEvent);
 
-                OnStarted?.Invoke(this, new TaskStartedEventArgs());
+                OnStarted?.Invoke(this, new WorkerStartedEventArgs());
 
                 return true;
             }
@@ -138,14 +139,14 @@ namespace Panteon.Sdk
             ScheduledTask.StopSchedule();
             //TODO: pause
 
-            OnPaused?.Invoke(this, new TaskPausedEventArgs());
+            OnPaused?.Invoke(this, new WorkerPausedEventArgs());
         }
 
         private void ScheduledTask_OnException(ScheduledTask arg1, Exception arg2)
         {
-            TaskLogger.Error($"An error occurred while executing {arg1.Name}", arg2);
+            WorkerLogger.Error($"An error occurred while executing {arg1.Name}", arg2);
 
-            OnException?.Invoke(this, new TaskExceptionEventArgs(arg1, arg2));
+            OnTaskException?.Invoke(this, new TaskExceptionEventArgs(arg1, arg2));
         }
 
         public virtual void Progress(ProgressMessage message)

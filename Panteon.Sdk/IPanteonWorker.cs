@@ -3,7 +3,7 @@ using Panteon.Sdk.Models;
 
 namespace Panteon.Sdk
 {
-    public interface IPanteonTask
+    public interface IPanteonWorker
     {
         string Name { get; }
         bool Init(bool autoRun);

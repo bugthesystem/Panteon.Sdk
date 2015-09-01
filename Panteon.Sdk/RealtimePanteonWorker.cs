@@ -7,23 +7,24 @@ using Panteon.Sdk.Realtime;
 
 namespace Panteon.Sdk
 {
-    public abstract class PanteonRealtimeTask : PanteonTask
+    public abstract class RealtimePanteonWorker : PanteonWorker
     {
         protected IPubSubClient PubSubClient { get; private set; }
 
-        protected PanteonRealtimeTask(ILogger taskLogger, ITaskSettings taskSettings, IPubSubClient pubSubClient) : base(taskLogger, taskSettings)
+        protected RealtimePanteonWorker(ILogger workerLogger, IWorkerSettings workerSettings, IPubSubClient pubSubClient) : base(workerLogger, workerSettings)
         {
             PubSubClient = pubSubClient;
 
-            OnStarted += Task_Started;
-            OnPaused += Task_Paused;
-            OnStopped += Task_Stopped;
-            OnException += Task_Exception;
-            OnEnter += Task_OnEnter;
-            OnExit += Task_OnExit;
+            OnStarted += Worker_Started;
+            OnPaused += Worker_Paused;
+            OnStopped += Worker_Stopped;
+
+            OnTaskException += Task_OnTaskException;
+            OnTaskEnter += Task_OnEnter;
+            OnTaskExit += Task_OnExit;
         }
 
-        private void Task_Started(object sender, TaskStartedEventArgs e)
+        private void Worker_Started(object sender, WorkerStartedEventArgs e)
         {
             try
             {
@@ -40,12 +41,12 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                TaskLogger.Error($"An error occurred while informing about [{Name}] starting operation. ", exception);
+                WorkerLogger.Error($"An error occurred while informing about [{Name}] starting operation. ", exception);
             }
         }
 
 
-        private void Task_Paused(object sender, TaskPausedEventArgs taskPausedEventArgs)
+        private void Worker_Paused(object sender, WorkerPausedEventArgs workerPausedEventArgs)
         {
             try
             {
@@ -63,11 +64,11 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                TaskLogger.Error($"An error occurred while informing about [{Name}] pausing operation. ", exception);
+                WorkerLogger.Error($"An error occurred while informing about [{Name}] pausing operation. ", exception);
             }
         }
 
-        private void Task_Stopped(object sender, TaskStoppedEventArgs taskStoppedEventArgs)
+        private void Worker_Stopped(object sender, WorkerStoppedEventArgs workerStoppedEventArgs)
         {
             try
             {
@@ -85,7 +86,7 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                TaskLogger.Error($"An error occurred while informing about [{Name}] stopping operation. ", exception);
+                WorkerLogger.Error($"An error occurred while informing about [{Name}] stopping operation. ", exception);
             }
         }
 
@@ -103,7 +104,7 @@ namespace Panteon.Sdk
             Console.WriteLine(result.Body);
         }
 
-        private void Task_OnEnter(object sender, TaskEventArgs e)
+        private void Task_OnEnter(object sender, WorkerEventArgs e)
         {
             try
             {
@@ -120,11 +121,11 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                TaskLogger.Error($"An error occurred while informing about [{Name}] action enter. ", exception);
+                WorkerLogger.Error($"An error occurred while informing about [{Name}] action enter. ", exception);
             }
         }
 
-        private void Task_OnExit(object sender, TaskEventArgs e)
+        private void Task_OnExit(object sender, WorkerEventArgs e)
         {
             try
             {
@@ -141,12 +142,12 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                TaskLogger.Error($"An error occurred while informing about [{Name}] action exit. ", exception);
+                WorkerLogger.Error($"An error occurred while informing about [{Name}] action exit. ", exception);
             }
         }
 
 
-        private void Task_Exception(object sender, TaskExceptionEventArgs e)
+        private void Task_OnTaskException(object sender, TaskExceptionEventArgs e)
         {
             try
             {
@@ -164,7 +165,7 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                TaskLogger.Error($"An error occurred while informing about [{Name}] exception. ", exception);
+                WorkerLogger.Error($"An error occurred while informing about [{Name}] exception. ", exception);
             }
         }
     }

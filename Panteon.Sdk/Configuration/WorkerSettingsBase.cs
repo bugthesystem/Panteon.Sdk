@@ -1,6 +1,6 @@
 namespace Panteon.Sdk.Configuration
 {
-    public class TaskSettingsBase : ITaskSettings
+    public class WorkerSettingsBase : IWorkerSettings
     {
         public bool Enabled { get; set; }
         public bool TestMode { get; set; }

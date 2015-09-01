@@ -5,7 +5,7 @@ using ILogger = Autofac.Extras.NLog.ILogger;
 
 namespace Panteon.Sdk
 {
-    public class CoreModule : Module
+    public class WorkerModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
