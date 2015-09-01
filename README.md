@@ -8,9 +8,13 @@ Panteon.Sdk
 
 **Realtime Task**  
 ```csharp
- public class HelloTask: PanteonRealtimeTask {
- 	public HelloTask(ILogger logger, IHelloTaskSettings taskSettings,
- 	IPubSubClient pubSubClient): base(logger, taskSettings, pubSubClient) {}
+ public class HelloTask: RealtimePanteonWorker {
+ 	
+ 	public HelloTask(ILogger logger, 
+ 	       IHelloTaskSettings taskSettings, 
+ 	       IPubSubClient pubSubClient)
+ 	    : base(logger, taskSettings, pubSubClient) {
+           }
 
  	public override string Name = > "My-Hello-Task";
 
@@ -26,7 +30,7 @@ Panteon.Sdk
 
  			if (i % 100000 == 0) {
  				Progress(new ProgressMessage {
- 					Message = message,
+ 					Message = message, 
  					Percent = 10m * tmp
  				});
  			}
@@ -39,16 +43,18 @@ Panteon.Sdk
 
 **General Task**  
 ```csharp
-public class SampleTask: PanteonTask {
-	public SampleTask(ILogger logger, ISampleTaskSettings taskSettings)
-	: base(logger, taskSettings) {}
-	public override string Name = > "My-Dummy-Task";
+  public class SampleTask: PanteonWorker {
+  	public SampleTask(ILogger logger, 
+  		ISampleTaskSettings taskSettings)
+  	: base(logger, taskSettings) {
+  	}
+  	public override string Name = > "My-Dummy-Task";
 
-	public override bool Init(bool autoRun) {
-		return Run((task, offset) = > 
-		Console.WriteLine($ "Dummy Hello {DateTime.Now}"));
-	}
-}
+  	public override bool Init(bool autoRun) {
+  		return Run((task, offset) = >
+  		  Console.WriteLine($ "Dummy Hello {DateTime.Now}"));
+  	}
+  }
 ```
 
 _**More coming soon (: **_
