@@ -41,7 +41,7 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                WorkerLogger.Error($"An error occurred while informing about [{Name}] starting operation. ", exception);
+                WorkerLogger.Error(string.Format("An error occurred while informing about [{0}] starting operation.", Name), exception);
             }
         }
 
@@ -64,7 +64,7 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                WorkerLogger.Error($"An error occurred while informing about [{Name}] pausing operation. ", exception);
+                WorkerLogger.Error(string.Format("An error occurred while informing about [{0}] pausing operation.",Name), exception);
             }
         }
 
@@ -86,7 +86,7 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                WorkerLogger.Error($"An error occurred while informing about [{Name}] stopping operation. ", exception);
+                WorkerLogger.Error(string.Format("An error occurred while informing about [{0}] stopping operation.",Name), exception);
             }
         }
 
@@ -121,7 +121,7 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                WorkerLogger.Error($"An error occurred while informing about [{Name}] action enter. ", exception);
+                WorkerLogger.Error(string.Format("An error occurred while informing about [{0}] action enter.",Name), exception);
             }
         }
 
@@ -142,7 +142,7 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                WorkerLogger.Error($"An error occurred while informing about [{Name}] action exit. ", exception);
+                WorkerLogger.Error(string.Format("An error occurred while informing about [{0}] action exit.", Name), exception);
             }
         }
 
@@ -165,7 +165,7 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                WorkerLogger.Error($"An error occurred while informing about [{Name}] exception. ", exception);
+                WorkerLogger.Error(string.Format("An error occurred while informing about [{0}] exception.",Name), exception);
             }
         }
     }

@@ -44,11 +44,11 @@ namespace Panteon.Sdk
 
         public virtual bool Run(Action<ScheduledTask, DateTimeOffset> actionToRun, bool autoRun = true)
         {
-            Console.WriteLine($"{Name} is started.");
+            Console.WriteLine("{0} is started.", Name);
 
             try
             {
-                WorkerLogger.Info($"{Name} is started.");
+                WorkerLogger.Info(string.Format("{0} is started.", Name));
 
                 //TODO: Async
                 //TODO: Reafctor & Improve
@@ -57,21 +57,21 @@ namespace Panteon.Sdk
                     TaskWrapper.WrapAsync(async (task, timeIntendedToRun) =>
                         await Task.Run(() =>
                         {
-                            OnTaskEnter?.Invoke(this, new WorkerEventArgs());
-                            actionToRun?.Invoke(task, timeIntendedToRun);
-                            OnTaskExit?.Invoke(this, new WorkerEventArgs());
+                            if (OnTaskEnter != null) OnTaskEnter(this, new WorkerEventArgs());
+                            if (actionToRun != null) actionToRun(task, timeIntendedToRun);
+                            if (OnTaskExit != null) OnTaskExit(this, new WorkerEventArgs());
                         }).ConfigureAwait(false))
                     , autoRun);
 
                 ScheduledTask.OnException += ScheduledTask_OnException;
 
-                OnStarted?.Invoke(this, new WorkerStartedEventArgs());
+                if (OnStarted != null) OnStarted(this, new WorkerStartedEventArgs());
 
                 return true;
             }
             catch (Exception exception)
             {
-                WorkerLogger.Error($"An error occurrred while executing {Name}", exception);
+                WorkerLogger.Error(string.Format("An error occurrred while executing {0}", Name), exception);
                 return false;
             }
         }
@@ -106,7 +106,7 @@ namespace Panteon.Sdk
             {
                 ScheduledTask.StopSchedule();
 
-                OnStopped?.Invoke(this, new WorkerStoppedEventArgs());
+                if (OnStopped != null) OnStopped(this, new WorkerStoppedEventArgs());
 
                 return true;
             }
@@ -123,7 +123,7 @@ namespace Panteon.Sdk
             {
                 ScheduledTask.StartSchedule(lastKnownEvent);
 
-                OnStarted?.Invoke(this, new WorkerStartedEventArgs());
+                if (OnStarted != null) OnStarted(this, new WorkerStartedEventArgs());
 
                 return true;
             }
@@ -139,20 +139,20 @@ namespace Panteon.Sdk
             ScheduledTask.StopSchedule();
             //TODO: pause
 
-            OnPaused?.Invoke(this, new WorkerPausedEventArgs());
+            if (OnPaused != null) OnPaused(this, new WorkerPausedEventArgs());
         }
 
         private void ScheduledTask_OnException(ScheduledTask arg1, Exception arg2)
         {
-            WorkerLogger.Error($"An error occurred while executing {arg1.Name}", arg2);
+            WorkerLogger.Error(string.Format("An error occurred while executing {0}", arg1.Name), arg2);
 
-            OnTaskException?.Invoke(this, new TaskExceptionEventArgs(arg1, arg2));
+            if (OnTaskException != null) OnTaskException(this, new TaskExceptionEventArgs(arg1, arg2));
         }
 
         public virtual void Progress(ProgressMessage message)
         {
             if (message != null)
-                Console.WriteLine($"{Name} task propress update {nameof(message.Message)}: {message.Message}, {nameof(message.Percent)} : {message.Percent}");
+                Console.WriteLine("{0} task propress update Message: {1}, Percent : {2}", Name, message.Message, message.Percent);
         }
 
         public void Dispose()
