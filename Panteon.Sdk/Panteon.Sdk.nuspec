@@ -11,7 +11,7 @@
     <projectUrl>https://github.com/PanteonProject/Panteon.Sdk/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-      Panteon Task Process Host
+      Panteon Task SDK
     </description>
     <summary> Panteon Task SDK</summary>
     <tags>panteon task job scheduler host</tags>
