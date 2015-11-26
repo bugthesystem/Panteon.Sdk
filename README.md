@@ -48,7 +48,7 @@ Panteon.Sdk
   		ISampleTaskSettings taskSettings)
   	: base(logger, taskSettings) {
   	}
-  	public override string Name = > "My-Dummy-Task";
+  	public override string Name = > "Sample-Task";
 
   	public override bool Init(bool autoRun) {
   		return Run((task, offset) = >
@@ -57,7 +57,7 @@ Panteon.Sdk
   }
 ```
 
-_**More coming soon (: **_
+_More coming soon (:_
 
 ## License
 Code and documentation are available according to the *MIT* License (see [LICENSE](https://raw.githubusercontent.com/PanteonProject/Panteon.Sdk/master/LICENSE)).
