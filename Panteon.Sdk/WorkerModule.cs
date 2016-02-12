@@ -1,6 +1,7 @@
 using Autofac;
 using Autofac.Extras.NLog;
 using NLog;
+using Panteon.Sdk.History;
 using Panteon.Sdk.IO;
 using ILogger = Autofac.Extras.NLog.ILogger;
 
@@ -14,6 +15,7 @@ namespace Panteon.Sdk
 
             builder.RegisterType<FileSystem>().As<IFileSystem>().SingleInstance();
             builder.RegisterType<FileReader>().As<IFileReader>().SingleInstance();
+            builder.RegisterType<NullHistoryStorage>().As<IHistoryStorage>().SingleInstance();
 
             base.Load(builder);
         }

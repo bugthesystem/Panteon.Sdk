@@ -35,7 +35,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>5</LangVersion>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
@@ -84,6 +84,9 @@
     <Compile Include="Configuration\IWorkerSettings.cs" />
     <Compile Include="Configuration\TaskConfigProviderBase.cs" />
     <Compile Include="Configuration\WorkerSettingsBase.cs" />
+    <Compile Include="History\HistoryModel.cs" />
+    <Compile Include="History\IHistoryStorage.cs" />
+    <Compile Include="History\NullHistoryStorage.cs" />
     <Compile Include="IO\FileContentResult.cs" />
     <Compile Include="IO\FileReader.cs" />
     <Compile Include="IO\FileSystem.cs" />

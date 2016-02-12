@@ -2,6 +2,7 @@
 using Autofac.Extras.NLog;
 using Panteon.Sdk.Configuration;
 using Panteon.Sdk.Events;
+using Panteon.Sdk.History;
 using Panteon.Sdk.Models;
 using Panteon.Sdk.Realtime;
 
@@ -11,7 +12,7 @@ namespace Panteon.Sdk
     {
         protected IPubSubClient PubSubClient { get; private set; }
 
-        protected RealtimePanteonWorker(ILogger workerLogger, IWorkerSettings workerSettings, IPubSubClient pubSubClient) : base(workerLogger, workerSettings)
+        protected RealtimePanteonWorker(ILogger workerLogger, IWorkerSettings workerSettings, IPubSubClient pubSubClient, IHistoryStorage historyStorage) : base(workerLogger, workerSettings, historyStorage)
         {
             PubSubClient = pubSubClient;
 
@@ -41,7 +42,7 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                WorkerLogger.Error(string.Format("An error occurred while informing about [{0}] starting operation.", Name), exception);
+                WorkerLogger.Error($"An error occurred while informing about [{Name}] starting operation.", exception);
             }
         }
 
@@ -64,7 +65,7 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                WorkerLogger.Error(string.Format("An error occurred while informing about [{0}] pausing operation.",Name), exception);
+                WorkerLogger.Error($"An error occurred while informing about [{Name}] pausing operation.", exception);
             }
         }
 
@@ -86,7 +87,7 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                WorkerLogger.Error(string.Format("An error occurred while informing about [{0}] stopping operation.",Name), exception);
+                WorkerLogger.Error($"An error occurred while informing about [{Name}] stopping operation.", exception);
             }
         }
 
@@ -121,7 +122,7 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                WorkerLogger.Error(string.Format("An error occurred while informing about [{0}] action enter.",Name), exception);
+                WorkerLogger.Error($"An error occurred while informing about [{Name}] action enter.", exception);
             }
         }
 
@@ -142,7 +143,7 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                WorkerLogger.Error(string.Format("An error occurred while informing about [{0}] action exit.", Name), exception);
+                WorkerLogger.Error($"An error occurred while informing about [{Name}] action exit.", exception);
             }
         }
 
@@ -165,7 +166,7 @@ namespace Panteon.Sdk
             }
             catch (Exception exception)
             {
-                WorkerLogger.Error(string.Format("An error occurred while informing about [{0}] exception.",Name), exception);
+                WorkerLogger.Error($"An error occurred while informing about [{Name}] exception.", exception);
             }
         }
     }

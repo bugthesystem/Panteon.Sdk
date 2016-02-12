@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Panteon.Sdk.History;
 using Panteon.Sdk.Models;
 
 namespace Panteon.Sdk
@@ -14,5 +16,7 @@ namespace Panteon.Sdk
 
         PanteonTaskInfo Inspect();
         void Progress(ProgressMessage message);
+
+        IEnumerable<HistoryModel> LoadHistory(DateTime? from = null, DateTime? to = null);
     }
 }

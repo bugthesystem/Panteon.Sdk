@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Autofac.Extras.NLog;
 using Panteon.Sdk.Configuration;
 using Panteon.Sdk.Events;
+using Panteon.Sdk.History;
 using Panteon.Sdk.Models;
 using Schyntax;
 using StackExchange.Redis;
@@ -12,6 +15,7 @@ namespace Panteon.Sdk
     public abstract class PanteonWorker : IPanteonWorker
     {
         protected ILogger WorkerLogger { get; private set; }
+        protected IHistoryStorage HistoryStorage { get; private set; }
         protected IWorkerSettings WorkerSettings { get; private set; }
 
         protected event EventHandler<WorkerStartedEventArgs> OnStarted;
@@ -27,8 +31,9 @@ namespace Panteon.Sdk
 
         private readonly Schtick _schtick;
 
-        protected PanteonWorker(ILogger workerLogger, IWorkerSettings workerSettings)
+        protected PanteonWorker(ILogger workerLogger, IWorkerSettings workerSettings, IHistoryStorage historyStorage)
         {
+            HistoryStorage = historyStorage;
             WorkerLogger = workerLogger;
             WorkerSettings = workerSettings;
             _schtick = new Schtick();
@@ -44,34 +49,37 @@ namespace Panteon.Sdk
 
         public virtual bool Run(Action<ScheduledTask, DateTimeOffset> actionToRun, bool autoRun = true)
         {
-            Console.WriteLine("{0} is started.", Name);
+
 
             try
             {
-                WorkerLogger.Info(string.Format("{0} is started.", Name));
-
-                //TODO: Async
-                //TODO: Reafctor & Improve
+                string message = $"{Name} is started.";
+                WorkerLogger.Info(message);
+                Store(message);
 
                 ScheduledTask = _schtick.AddAsyncTask(Name, WorkerSettings.SchedulePattern,
                     TaskWrapper.WrapAsync(async (task, timeIntendedToRun) =>
                         await Task.Run(() =>
                         {
-                            if (OnTaskEnter != null) OnTaskEnter(this, new WorkerEventArgs());
-                            if (actionToRun != null) actionToRun(task, timeIntendedToRun);
-                            if (OnTaskExit != null) OnTaskExit(this, new WorkerEventArgs());
+                            OnTaskEnter?.Invoke(this, new WorkerEventArgs());
+
+                            actionToRun?.Invoke(task, timeIntendedToRun);
+
+                            OnTaskExit?.Invoke(this, new WorkerEventArgs());
                         }).ConfigureAwait(false))
                     , autoRun);
 
                 ScheduledTask.OnException += ScheduledTask_OnException;
 
-                if (OnStarted != null) OnStarted(this, new WorkerStartedEventArgs());
+                OnStarted?.Invoke(this, new WorkerStartedEventArgs());
 
                 return true;
             }
             catch (Exception exception)
             {
-                WorkerLogger.Error(string.Format("An error occurrred while executing {0}", Name), exception);
+                string details = $"An error occurrred while executing {Name}";
+                WorkerLogger.Error(details, exception);
+                Store($"{details}, Exception = {exception.Message}");
                 return false;
             }
         }
@@ -106,7 +114,7 @@ namespace Panteon.Sdk
             {
                 ScheduledTask.StopSchedule();
 
-                if (OnStopped != null) OnStopped(this, new WorkerStoppedEventArgs());
+                OnStopped?.Invoke(this, new WorkerStoppedEventArgs());
 
                 return true;
             }
@@ -123,7 +131,7 @@ namespace Panteon.Sdk
             {
                 ScheduledTask.StartSchedule(lastKnownEvent);
 
-                if (OnStarted != null) OnStarted(this, new WorkerStartedEventArgs());
+                OnStarted?.Invoke(this, new WorkerStartedEventArgs());
 
                 return true;
             }
@@ -133,31 +141,48 @@ namespace Panteon.Sdk
 
         public virtual void Pause(TimeSpan duration)
         {
+            //TODO: pause
             var now = DateTime.Now;
             var nextStartDate = now.AddSeconds(duration.Seconds);
 
             ScheduledTask.StopSchedule();
-            //TODO: pause
 
-            if (OnPaused != null) OnPaused(this, new WorkerPausedEventArgs());
+            OnPaused?.Invoke(this, new WorkerPausedEventArgs());
         }
 
-        private void ScheduledTask_OnException(ScheduledTask arg1, Exception arg2)
+        private void ScheduledTask_OnException(ScheduledTask task, Exception exception)
         {
-            WorkerLogger.Error(string.Format("An error occurred while executing {0}", arg1.Name), arg2);
+            string message = $"An error occurred while executing {task.Name}";
 
-            if (OnTaskException != null) OnTaskException(this, new TaskExceptionEventArgs(arg1, arg2));
+            WorkerLogger.Error(message, exception);
+            Store($"{message}, Exception = {exception.Message}");
+
+            OnTaskException?.Invoke(this, new TaskExceptionEventArgs(task, exception));
         }
 
         public virtual void Progress(ProgressMessage message)
         {
             if (message != null)
-                Console.WriteLine("{0} task propress update Message: {1}, Percent : {2}", Name, message.Message, message.Percent);
+            {
+                string format = $"{Name} task propress update Message: {message.Message}, Percent : {message.Percent}";
+                Console.WriteLine(format);
+                Store(format);
+            }
+        }
+
+        public virtual IEnumerable<HistoryModel> LoadHistory(DateTime? @from = null, DateTime? to = null)
+        {
+            return HistoryStorage.Load(Name, from, to);
         }
 
         public void Dispose()
         {
             ScheduledTask.StopSchedule();
+        }
+
+        private void Store(string message)
+        {
+            HistoryStorage.Store(new HistoryModel { DateCreated = DateTime.Now, Details = message, Name = Name });
         }
     }
 }
