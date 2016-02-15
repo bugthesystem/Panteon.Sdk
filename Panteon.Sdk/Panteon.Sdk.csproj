@@ -86,6 +86,7 @@
     <Compile Include="Configuration\WorkerSettingsBase.cs" />
     <Compile Include="History\HistoryModel.cs" />
     <Compile Include="History\IHistoryStorage.cs" />
+    <Compile Include="History\IHistoryStorageSettings.cs" />
     <Compile Include="History\NullHistoryStorage.cs" />
     <Compile Include="IO\FileContentResult.cs" />
     <Compile Include="IO\FileReader.cs" />

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Autofac.Extras.NLog;
 using Panteon.Sdk.Configuration;
@@ -116,6 +115,8 @@ namespace Panteon.Sdk
 
                 OnStopped?.Invoke(this, new WorkerStoppedEventArgs());
 
+                Store($"{Name} has stopped at {DateTime.Now}");
+
                 return true;
             }
             catch (Exception exception)
@@ -133,6 +134,8 @@ namespace Panteon.Sdk
 
                 OnStarted?.Invoke(this, new WorkerStartedEventArgs());
 
+                Store($"{Name} has started at {DateTime.Now}");
+
                 return true;
             }
 
@@ -148,6 +151,8 @@ namespace Panteon.Sdk
             ScheduledTask.StopSchedule();
 
             OnPaused?.Invoke(this, new WorkerPausedEventArgs());
+
+            Store($"{Name} has paused at {DateTime.Now}");
         }
 
         private void ScheduledTask_OnException(ScheduledTask task, Exception exception)
