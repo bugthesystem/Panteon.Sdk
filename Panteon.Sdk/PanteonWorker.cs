@@ -60,11 +60,13 @@ namespace Panteon.Sdk
                     TaskWrapper.WrapAsync(async (task, timeIntendedToRun) =>
                         await Task.Run(() =>
                         {
+                            Store($"{Name} - execution has started at {DateTime.Now}");
                             OnTaskEnter?.Invoke(this, new WorkerEventArgs());
 
                             actionToRun?.Invoke(task, timeIntendedToRun);
 
                             OnTaskExit?.Invoke(this, new WorkerEventArgs());
+                            Store($"{Name} - execution has completed at {DateTime.Now}");
                         }).ConfigureAwait(false))
                     , autoRun);
 
