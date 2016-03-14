@@ -3,6 +3,10 @@ Panteon.Sdk
 
 ![](https://github.com/PanteonProject/panteon-dashboard/blob/master/misc/path4141.png)  
 
+### IMPORTANT
+**It uses [Schyntax](https://github.com/schyntax/schyntax) for defining  event schedules.**
+> Schyntax is a domain-specific language for defining event schedules in a terse, but readable, format. For example, if you want something to run every five minutes, you could write min(*%5).
+
 
 ## Preview  
 
