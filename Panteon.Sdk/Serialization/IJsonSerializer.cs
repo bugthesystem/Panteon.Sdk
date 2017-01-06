@@ -1,4 +1,4 @@
-namespace Panteon.Sdk.Utils
+namespace Panteon.Sdk.Serialization
 {
     public interface IJsonSerializer
     {

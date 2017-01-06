@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Panteon.Sdk.Utils
+namespace Panteon.Sdk.Serialization
 {
     public class JsonNetSerializer : IJsonSerializer
     {

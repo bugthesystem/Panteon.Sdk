@@ -2,7 +2,7 @@
 using System.Reflection;
 using Autofac.Extras.NLog;
 using Panteon.Sdk.IO;
-using Panteon.Sdk.Utils;
+using Panteon.Sdk.Serialization;
 
 namespace Panteon.Sdk.Configuration
 {

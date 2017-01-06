@@ -113,8 +113,8 @@
     <Compile Include="Realtime\PubSubMessage.cs" />
     <Compile Include="Requires.cs" />
     <Compile Include="ScheduleInfo.cs" />
-    <Compile Include="Utils\IJsonSerializer.cs" />
-    <Compile Include="Utils\JsonNetSerializer.cs" />
+    <Compile Include="Serialization\IJsonSerializer.cs" />
+    <Compile Include="Serialization\JsonNetSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
